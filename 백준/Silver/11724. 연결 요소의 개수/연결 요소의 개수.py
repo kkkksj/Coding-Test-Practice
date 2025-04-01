@@ -3,10 +3,11 @@ sys.setrecursionlimit(10**6)
 input = sys.stdin.readline
 
 def dfs(visited, point, graph):
-    visited[point] = True
     for node in graph[point]:
         if visited[node] is False:
+            visited[node] = True
             dfs(visited, node, graph)
+    return visited
 
 n, m = map(int, input().split())
 
@@ -21,8 +22,7 @@ for i in range(m):
 visited = [False] * (n+1)
 cnt = 0
 for i in range(1, n+1):
-    if visited[i] is False:
-        dfs(visited, i, graph)
+    if visited[i] == False:
+        visited = dfs(visited, i, graph)
         cnt += 1
-        
 print(cnt)
