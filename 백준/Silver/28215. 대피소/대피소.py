@@ -36,7 +36,8 @@ elif m == 3:
                 for k in range(n):
                     if k != i and k != j and k != l:
                         dist = min(cal_dist(xy_list[i][0], xy_list[i][1], xy_list[k][0], xy_list[k][1]),
-                                   cal_dist(xy_list[j][0], xy_list[j][1], xy_list[k][0], xy_list[k][1]))
+                                   cal_dist(xy_list[j][0], xy_list[j][1], xy_list[k][0], xy_list[k][1]),
+                                   cal_dist(xy_list[l][0], xy_list[l][1], xy_list[k][0], xy_list[k][1]))
                         max_dist = max(max_dist, dist)
                 min_max_dist = min(min_max_dist, max_dist)
 print(min_max_dist)
