@@ -1,9 +1,8 @@
 #include <iostream>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include <cstring>
 using namespace std;
-
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -13,7 +12,7 @@ int main() {
     signed int num;
     cin >> n;
 
-    map<signed int, int> card;
+    unordered_map<signed int, int> card;
     for(int i=0; i<n; i++){
         cin >> num;
         card[num]++;
