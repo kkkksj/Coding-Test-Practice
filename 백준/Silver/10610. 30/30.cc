@@ -7,21 +7,19 @@ int main() {
     string number;
     cin >> number;
 
-    vector<string> num (number.size());
+    vector<char> num(number.size());
     for(size_t i=0; i<number.size(); i++)
         num[i] = number[i];
-    
-    sort(num.begin(), num.end());
-    
-    if(num[0] == "0"){
+        
+    sort(num.rbegin(), num.rend());
+
+    if(num.back() == '0') {
         int sum = 0;
-        string ans = "";
-        for(string n : num){
-            sum += stoi(n);
-            ans = n+ans;
-        }
-        if(sum%3 == 0)
-            cout << ans;
+        for(char c : num)
+            sum += int(c - '0');
+        if(sum % 3 == 0)
+            for(char c : num)
+                cout << c;
         else
             cout << -1;
     }
