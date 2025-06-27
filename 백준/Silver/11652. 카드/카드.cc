@@ -11,9 +11,12 @@ bool Sort(pair<signed long long, int> a, pair<signed long long, int> b){
 }
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+    
     int n;
     cin >> n; 
-    
+
     signed long long num;
     map<signed long long, int> card;
     for(int i=0; i<n; i++){
