@@ -1,10 +1,9 @@
 #include <iostream>
 #include <algorithm>
-#include <deque>
-#include <unordered_map>
+#include <vector>
 using namespace std;
 
-void Combi(deque<int> &ans, int n, int m){
+void Combi(vector<int> &ans, int n, int m){
     if((int)ans.size() == m){
         for(int num : ans)
             cout << num << ' ';
@@ -24,6 +23,6 @@ int main() {
 
     int n, m;
     cin >> n >> m;
-    deque<int> ans;
+    vector<int> ans;
     Combi(ans, n, m);
 }
