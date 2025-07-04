@@ -10,21 +10,19 @@ int main() {
     int n;
     cin >> n;
 
-    vector<int> dist (n-1);
-    vector<int> price (n);
+    vector<long long> dist (n-1);
+    vector<long long> price (n);
     for(int i=0; i<n-1; i++)
         cin >> dist[i];
     for(int i=0; i<n; i++)
         cin >> price[i];
 
-    int ans = 0;
-    int dist_idx = 0;
-    int price_idx= 0;
-    while(dist_idx < n-1 && price_idx < n){
-        ans += price[price_idx] * dist[dist_idx];
-        if(price[price_idx] > price[price_idx+1])
-            price_idx++;
-        dist_idx++;
+    long long ans = 0;
+    int price_idx = 0;
+    for(int i=0; i<n-1; i++){
+        if(price[price_idx] > price[i])
+            price_idx = i;
+        ans += (price[price_idx] * dist[i]);
     }
 
     cout << ans << '\n';
