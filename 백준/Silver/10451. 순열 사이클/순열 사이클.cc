@@ -1,14 +1,14 @@
 #include <iostream>
 #include <algorithm>
 #include <map>
-#include <set>
+#include <vector>
 #include <queue>
 using namespace std;
 
-void DFS(map<int, int> &graph, set<int> &visited, int node, queue<int> &list){
+void DFS(map<int, int> &graph, vector<bool> &visited, int node, queue<int> &list){
     int next_node = graph[node];
-    if(visited.find(next_node) == visited.end()){   //이미 방문한 노드가 아니라면
-        visited.insert(next_node);
+    if(visited[next_node] == false){   //이미 방문한 노드가 아니라면
+        visited[next_node] = true;
         DFS(graph, visited, next_node, list);
     }
 }
@@ -26,7 +26,7 @@ int main() {
 
         int num;
         map<int, int> graph;
-        set<int> visited;
+        vector<bool> visited (n+1);
         queue<int> list;
         for(int i=1; i<n+1; i++){
             cin >> num;
@@ -39,8 +39,8 @@ int main() {
         while(!list.empty()){
             node = list.front();
             list.pop();
-            if(visited.find(node) == visited.end()){
-                visited.insert(node);
+            if(visited[node] == false){
+                visited[node] = true;
                 DFS(graph, visited, node, list);
                 ans++;
             }
