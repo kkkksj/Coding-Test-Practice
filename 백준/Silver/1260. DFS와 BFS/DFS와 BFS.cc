@@ -10,7 +10,7 @@ void DFS(vector<bool> &visited, map<int, set<int>> &graph, int node){
     cout << node << ' ';
     visited[node] = true;
 
-    set<int> connected = graph[node];
+    set<int> &connected = graph[node];
     for(auto n = connected.begin(); n != connected.end(); n++)
         if(!visited[*n]){
             visited[*n] = true;
@@ -28,7 +28,7 @@ void BFS(vector<bool> &visited, map<int, set<int>> &graph, int &node){
         node = q.front();
         cout << node << ' ';
         q.pop();
-        set<int> connected = graph[node];
+        set<int> &connected = graph[node];
         for(auto n = connected.begin(); n != connected.end(); n++)
             if(!visited[*n]){
                 visited[*n] = true;
@@ -52,9 +52,9 @@ int main() {
         graph[b].insert(a);
     }
 
-    vector<bool> visited1 (n+1, false);
-    DFS(visited1, graph, v);
+    vector<bool> visited (n+1, false);
+    DFS(visited, graph, v);
     cout << '\n';
-    vector<bool> visited2 (n+1, false);
-    BFS(visited2, graph, v);
+    visited = vector<bool> (n+1, false);
+    BFS(visited, graph, v);
 }
