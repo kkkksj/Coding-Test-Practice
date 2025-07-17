@@ -4,21 +4,15 @@
 #include <queue>
 using namespace std;
 
-void Back(vector<int> arr, vector<int> &ans_list, int &ans, int m, int s, int n, int idx){
-    if((int)ans_list.size() == m){
-        int ans_sum = 0;
-        for(int tmp : ans_list)
-            ans_sum += tmp;
-        if(ans_sum == s)
+void CountCase(int cnt, int result, int &ans, int n, int s, vector<int> &arr){
+    if(cnt == n){
+        if(result == s)
             ans++;
     }
-    else
-        for(int i=0; i<n; i++)
-            if(ans_list.empty() || idx < i){
-                ans_list.push_back(arr[i]);
-                Back(arr, ans_list, ans, m, s, n, i);
-                ans_list.pop_back();
-            }
+    else{
+        CountCase(cnt+1, result, ans, n, s, arr);   // 다음 수를 더하지 않고 넘어감
+        CountCase(cnt+1, result+arr[cnt], ans, n, s, arr);  // 다음 수를 더함
+    }
 }
 
 int main() {
@@ -34,10 +28,10 @@ int main() {
     sort(arr.begin(), arr.end());
     
     int ans = 0;
-    vector<int> ans_list;
-    for(int i=1; i<n+1; i++){
-        ans_list.clear();
-        Back(arr, ans_list, ans, i, s, n, -1);
-    }
+    CountCase(0, 0, ans, n, s, arr);
+
+    if(s==0)
+        ans--;  // 목표 값이 0일 경우 공집합이 체크된 것은 제외해야 함
+
     cout << ans << '\n';
 }
