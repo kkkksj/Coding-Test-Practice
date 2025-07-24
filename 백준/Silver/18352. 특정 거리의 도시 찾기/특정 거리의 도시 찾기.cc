@@ -1,24 +1,21 @@
 #include <iostream>
 #include <algorithm>
-#include <map>
 #include <vector>
 #include <queue>
 using namespace std;
 
 int n, m, k, x;
-void BFS(map<int, vector<int>> graph, vector<int> &dist){
-    vector<bool> visited (n+1, false);
-    visited[x] = true;
+void BFS(vector<vector<int>> &graph, vector<int> &dist){
     queue<int> q;
     q.push(x);
+    dist[x] = 0;
 
     while(!q.empty()){
         int node = q.front();
         q.pop();
         for(int next : graph[node])
-            if(visited[next] == false){
+            if(dist[next] == -1){
                 dist[next] = dist[node] + 1;
-                visited[next] = true;
                 q.push(next);
             }
     }
@@ -30,7 +27,7 @@ int main() {
     
     cin >> n >> m >> k >> x;
 
-    map<int, vector<int>> graph;
+    vector<vector<int>> graph(n+1);
     for(int i=0; i<m; i++){
         int a, b;
         cin >> a >> b;
@@ -38,7 +35,7 @@ int main() {
         graph[a].push_back(b);
     }
 
-    vector<int> dist(n+1, 0);
+    vector<int> dist(n+1, -1);
     BFS(graph, dist);
 
     vector<int> ans;
