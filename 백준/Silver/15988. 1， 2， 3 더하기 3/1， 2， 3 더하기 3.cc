@@ -24,6 +24,6 @@ int main() {
     int num;
     for(int i=0; i<t; i++){
         cin >> num;
-        cout << dp[num] % MOD << '\n';
+        cout << dp[num] << '\n';
     }
 }
