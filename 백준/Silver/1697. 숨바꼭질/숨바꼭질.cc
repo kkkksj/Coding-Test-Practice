@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#define SIZE 100001
+
 int n, k;
 
 int Search(){
@@ -26,11 +28,12 @@ int Search(){
                 times[pos-1] = times[pos]+1;
                 q.push(pos-1);
             }
-        if(times.find(pos+1) == times.end()){
-            times[pos+1] = times[pos]+1;
-            q.push(pos+1);
-        }
-        if(pos*2 <k*2)
+        if(pos+1 < SIZE)
+            if(times.find(pos+1) == times.end()){
+                times[pos+1] = times[pos]+1;
+                q.push(pos+1);
+            }
+        if(pos*2 <SIZE)
             if(times.find(pos*2) == times.end()){
                 times[pos*2] = times[pos]+1;
                 q.push(pos*2);
