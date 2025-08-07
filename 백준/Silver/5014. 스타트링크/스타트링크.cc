@@ -6,7 +6,7 @@
 using namespace std;
 
 int BFS(int f, int s, int g, int u, int d){
-    vector<long long> dist (f+1, -1);
+    vector<int> dist (f+1, -1);
     dist[s] = 0;
 
     queue<int> q;
@@ -19,8 +19,8 @@ int BFS(int f, int s, int g, int u, int d){
         if(floor == g)
             return dist[floor];
 
-        long long up_floor = floor + u;
-        long long down_floor = floor - d;
+        int up_floor = floor + u;
+        int down_floor = floor - d;
         if(up_floor < f+1 && dist[up_floor] == -1){
             dist[up_floor] = dist[floor] + 1;
             q.push(up_floor);
