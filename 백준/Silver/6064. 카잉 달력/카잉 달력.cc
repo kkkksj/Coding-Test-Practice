@@ -5,17 +5,16 @@
 
 using namespace std;
 
-int find(int m, int n, int x, int y){
-    unordered_set<int> s;
-    for(int i=0; i<40000; i++){
-        int rest = (i*m + x)%n;
-        if(rest == 0)
-            rest = n;
-        if(rest == y)
-            return i*m + x;
-        if(s.find(rest) != s.end())
-            return -1;
-        s.insert(rest);
+int find(int m, int n, int x, int y) {
+    if (m == x) 
+        x = 0;
+    if (n == y) 
+        y = 0;
+    for (int i = x; i <= m * n; i += m) {
+        if (i == 0) 
+            continue;
+        if (i % n == y) 
+            return i;
     }
     return -1;
 }
