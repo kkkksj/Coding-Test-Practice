@@ -8,7 +8,7 @@ using namespace std;
 string ans_min = "";
 string ans_max = "";
 
-void FindMin(vector<char> &sign, vector<char> made, int n){
+void FindMin(vector<char> &sign, vector<char> made, int n, vector<bool> &visited){
     if((int)made.size() == n+1){
         char prev = made[0];
         for(int i=0; i<n; i++){
@@ -27,16 +27,18 @@ void FindMin(vector<char> &sign, vector<char> made, int n){
     }
     else
         for(char i='0'; i<='9'; i++)
-            if(find(made.begin(), made.end(), i) == made.end()){
+            if(visited[i-'0'] == false){
                 made.push_back(i);
-                FindMin(sign, made, n);
+                visited[i-'0'] = true;
+                FindMin(sign, made, n, visited);
                 if(ans_min != "")
                     return;
                 made.pop_back();
+                visited[i-'0'] = false;
             }
 }
 
-void FindMax(vector<char> &sign, vector<char> made, int n){
+void FindMax(vector<char> &sign, vector<char> made, int n, vector<bool> &visited){
     if((int)made.size() == n+1){
         char prev = made[0];
         for(int i=0; i<n; i++){
@@ -55,12 +57,14 @@ void FindMax(vector<char> &sign, vector<char> made, int n){
     }
     else
         for(char i='9'; i>='0'; i--)
-            if(find(made.begin(), made.end(), i) == made.end()){
+            if(visited[i-'0'] == false){
                 made.push_back(i);
-                FindMax(sign, made, n);
+                visited[i-'0'] = true;
+                FindMax(sign, made, n, visited);
                 if(ans_max != "")
                     return;
                 made.pop_back();
+                visited[i-'0'] = false;
             }
 }
 
@@ -75,8 +79,10 @@ int main() {
     for(int i=0; i<n; i++)
         cin >> sign[i];
 
+    vector<bool> visited1(10, false);
     vector<char> made;
-    FindMin(sign, made, n);
-    FindMax(sign, made, n);
+    FindMin(sign, made, n, visited1);
+    vector<bool> visited2(10, false);
+    FindMax(sign, made, n, visited2);
     cout << ans_max << '\n' << ans_min << '\n';
 }
