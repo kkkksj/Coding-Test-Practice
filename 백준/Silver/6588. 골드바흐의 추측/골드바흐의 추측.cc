@@ -26,7 +26,7 @@ int main() {
     prime[1] = false;
     for(int i=2; i<sqrt(MAX)+1; i++)
         if(prime[i] == true)
-            for(int j=i+i; j<MAX+1; j+=i)
+            for(int j=i*i; j<MAX+1; j+=i)
                 prime[j] = false;
 
     while(true){
