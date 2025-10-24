@@ -1,28 +1,32 @@
 from collections import deque
 
-def BFS(words, begin, target):
-    q = deque()
-    q.append((begin, 0))
-    visited = [False]*len(words)
-    
-    result = 0
-    while q:
-        now, dist = q.popleft()
-        if now == target:
-            return dist
-        for i in range(len(words)):
-            if not visited[i]:
-                word = words[i]
-                cnt = 0
-                for idx in range(len(word)):
-                    if word[idx] != now[idx]:
-                        cnt += 1
-                if cnt == 1:
-                    q.append((word, dist+1))
-                    visited[i] = True
-    return 0 
+def IsOnly1Diff(a, b):
+    n = len(a)
+    diff = 0
+    for i in range(n):
+        if a[i] != b[i]:
+            diff += 1
+    if diff == 1:
+        return True
+    return False
 
 def solution(begin, target, words):
-    answer = 0
-    answer = BFS(words, begin, target)
-    return answer
+    words_n = len(words)
+    visited = [False] * words_n
+    q = deque()
+    q.append([begin, 0])
+    
+    while q:
+        now_word, cnt = q.popleft()
+        if now_word == target:
+            return cnt
+        
+        for i in range(words_n):
+            if visited[i] == True:
+                continue
+            next_word = words[i]
+            if IsOnly1Diff(now_word, next_word):
+                visited[i] = True
+                q.append([next_word, cnt+1])
+        
+    return 0
