@@ -10,26 +10,44 @@ vector<string> grid;
 vector<int> i_list = { 0, 1, 0, -1};
 vector<int> j_list = { 1, 0, -1, 0 };
 
+struct Info {
+	int w;
+	int i, j;
+};
+
+struct CMP{
+	bool operator() (Info a, Info b) {
+		if (a.w != b.w)
+			return a.w > b.w;
+		if (a.i != b.i)
+			return a.i > b.i;
+		return a.j > b.j;
+	}
+};
+
 int BFS() {
 	vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
-	queue<pair<int, int>> q;
-	q.push({ 0, 0 });
+	priority_queue < Info, vector<Info>, CMP> q;
 	dist[0][0] = grid[0][0] - '0';
+	q.push({ dist[0][0], 0, 0 });
 
 	while (!q.empty()) {
-		int now_i = q.front().first;
-		int now_j = q.front().second;
+		int now_i = q.top().i;
+		int now_j = q.top().j;
+		int weight = q.top().w;
 		q.pop();
 
+		if (now_i == n - 1 && now_j == n - 1)
+			return weight;
 		for (int d = 0; d < 4; d++) {
 			int next_i = now_i + i_list[d];
 			int next_j = now_j + j_list[d];
 			if (next_i < 0 || next_i >= n || next_j < 0 || next_j >= n)
 				continue;
-			if (dist[next_i][next_j] <= dist[now_i][now_j] + (grid[next_i][next_j] - '0'))
+			if (dist[next_i][next_j] <= weight + (grid[next_i][next_j] - '0'))
 				continue;
-			dist[next_i][next_j] = dist[now_i][now_j] + (grid[next_i][next_j] - '0');
-			q.push({ next_i, next_j });
+			dist[next_i][next_j] = weight + (grid[next_i][next_j] - '0');
+			q.push({ dist[next_i][next_j], next_i, next_j });
 		}
 	}
 	return dist[n - 1][n - 1];
