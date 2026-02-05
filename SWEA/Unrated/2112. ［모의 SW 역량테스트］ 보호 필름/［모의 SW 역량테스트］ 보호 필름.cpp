@@ -1,93 +1,103 @@
 #include<iostream>
 #include<vector>
-#include<algorithm>
 
 using namespace std;
 
 int d, w, k;
-int film[13][20];
-int aorb[13]; // -1: 원래 상태, 0: A(0), 1: B(1)
+int film[13][20];	// 세로, 가로 최대로 할당
+int aorb[13] = { -1, };
 
 bool IsPass() {
-    for (int j = 0; j < w; j++) {
-        int cnt = 1;
-        bool column_pass = false;
-
-        if (k == 1) column_pass = true;
-        else {
-            int pre = (aorb[0] != -1) ? aorb[0] : film[0][j];
-            for (int i = 1; i < d; i++) {
-                int now = (aorb[i] != -1) ? aorb[i] : film[i][j];
-                if (pre == now) cnt++;
-                else {
-                    pre = now;
-                    cnt = 1;
-                }
-                if (cnt >= k) {
-                    column_pass = true;
-                    break;
-                }
-            }
-        }
-        if (!column_pass) return false;
-    }
-    return true;
+	// 모든 열의 행들을 검사하며 조건을 충족 여부 반환
+	int pre, now, cnt;
+	for (int j = 0; j < w; j++) {
+		cnt = 1;
+		bool flag = false;
+		for (int i = 0; i < d; i++) {
+			if (aorb[i] != -1)
+				now = aorb[i];
+			else
+				now = film[i][j];
+			if (i == 0) {
+				pre = now;
+				continue;
+			}
+			if (pre == now)
+				cnt++;
+			else {
+				cnt = 1;
+				pre = now;
+			}
+			if (cnt >= k) {
+				flag = true;
+				break;
+			}
+		}
+		if (!flag)
+			return false;
+	}
+	return true;
 }
 
-bool AorB(const vector<int>& target_rows, int idx) {
-    if (idx == target_rows.size()) {
-        return IsPass();
-    }
+bool AorB(int cnt, vector<int> &picked) {
+	// 뽑은 조합 각 행에 A(0)를 줄지 B(1)를 줄지
+	// 뽑은 조합을 어떻게 알게하지.......
+	if (cnt == picked.size())
+		return IsPass();
+	
+	aorb[picked[cnt]] = 0;
+	if (AorB(cnt + 1, picked))
+		return true;
+	aorb[picked[cnt]] = 1;
+	if (AorB(cnt + 1, picked))
+		return true;
 
-    int row_idx = target_rows[idx];
+	aorb[picked[cnt]] = -1;
 
-    aorb[row_idx] = 0;
-    if (AorB(target_rows, idx + 1)) return true;
-
-    aorb[row_idx] = 1;
-    if (AorB(target_rows, idx + 1)) return true;
-
-    aorb[row_idx] = -1;
-    return false;
+	return false;
 }
 
-bool Back(int start, int cnt, int limit, vector<int>& selected) {
-    if (cnt == limit) {
-        return AorB(selected, 0);
-    }
-
-    for (int i = start; i < d; i++) {
-        selected.push_back(i);
-        if (Back(i + 1, cnt + 1, limit, selected)) 
-            return true;
-        selected.pop_back(); 
-    }
-    return false;
+bool Back(int start, int cnt, int len, vector<int> &picked) {
+	// d C cnt 조합 뽑기
+	if (cnt == len) 
+		return AorB(0, picked);
+	
+	for (int i = start; i < d; i++) {
+		picked.push_back(i);
+		if (Back(i + 1, cnt + 1, len, picked))
+			return true;
+		picked.pop_back();
+	}
+	return false;
 }
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+int main(int argc, char** argv)
+{
+	int test_case;
+	int T;
 
-    int T;
-    cin >> T;
-    for (int tc = 1; tc <= T; tc++) {
-        cin >> d >> w >> k;
-        for (int i = 0; i < d; i++) {
-            aorb[i] = -1; // 초기화
-            for (int j = 0; j < w; j++) 
-                cin >> film[i][j];
-        }
+	cin >> T;
 
-        int ans = 0;
-        for (int i = 0; i <= k; i++) {
-            vector<int> selected;
-            if (Back(0, 0, i, selected)) {
-                ans = i;
-                break;
-            }
-        }
-        cout << "#" << tc << " " << ans << "\n";
-    }
-    return 0;
+	for (test_case = 1; test_case <= T; ++test_case)
+	{
+		cin >> d >> w >> k;
+		for (int i = 0; i < d; i++) {
+			aorb[i] = -1;
+			for (int j = 0; j < w; j++)
+				cin >> film[i][j];
+		}
+		int ans = 0;
+		if (k > 1) {
+			for (int i = 0; i <= k; i++) {
+				// 일단 경우의 수 다 뽑고 만족하는지 계산 
+				vector<int> picked;
+				if (Back(0, 0, i, picked)) {
+					ans = i;
+					break;
+				}
+			}
+		}
+		cout << '#' << test_case << ' ' << ans << '\n';
+	}
+	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
