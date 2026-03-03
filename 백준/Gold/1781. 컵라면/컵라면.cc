@@ -26,6 +26,9 @@ int Search() {
 }
 
 int main() {
+	ios::sync_with_stdio(NULL);
+	cin.tie(NULL);
+
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		int deadline, cup;
