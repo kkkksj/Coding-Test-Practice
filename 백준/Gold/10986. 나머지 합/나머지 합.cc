@@ -1,28 +1,37 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
-int main()
-{
-	int n, m;
-	cin >> n >> m;
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	vector<long long> cnt(m, 0);
-	long long pre = 0;
+    int n, m;
+    cin >> n >> m;
 
-	cnt[0] = 1;
-	for (int i = 0; i < n; i++) {
-		long long num;
-		cin >> num;
-		pre = (pre + num) % m;
-		cnt[pre]++;
-	}
+    vector<long long> cnt(m, 0);
+    long long sum = 0;
+    long long answer = 0;
 
-	long long ans = 0;
-	for (int i = 0; i < m; i++)
-		if (cnt[i] >= 2)
-			ans += (cnt[i] * (cnt[i] - 1)) / 2;
+    for (int i = 0; i < n; i++) {
+        int num;
+        cin >> num;
+        sum += num;
 
-	cout << ans << '\n';
+        int remainder = sum % m;
+        if (remainder == 0) answer++;
+
+        cnt[remainder]++;
+    }
+
+    for (int i = 0; i < m; i++) {
+        if (cnt[i] >= 2) {
+            answer += (cnt[i] * (cnt[i] - 1)) / 2;
+        }
+    }
+
+    cout << answer << "\n";
+
+    return 0;
 }
