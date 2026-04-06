@@ -6,56 +6,46 @@ using namespace std;
 
 int n;
 vector<int> dist;
-struct QInfo {
-	int num, dist;
-	vector<int> ans_vec;
-};
+vector<int> parent;	// 경로 출력을 위함
 
 void BFS() {
+	parent[1] = 0;
 	dist[1] = 0;
-	queue<QInfo> q;
-	q.push({ 1, 0, {1} });
+	queue<int> q;
+	q.push(1);
 
 	while (!q.empty()) {
-		QInfo now = q.front();
+		int nownum = q.front();
 		q.pop();
 
-		if (now.num == n) {
-			cout << now.dist << '\n';
-			for (auto it = now.ans_vec.rbegin(); it != now.ans_vec.rend(); it++)
-				cout << *it << ' ';
+		if (nownum == n) {
+			cout << dist[nownum] << '\n';	// 연산 횟수 출력
+			int pointer = nownum;
+			while (parent[pointer] != -1) {	// 경로 출력
+				cout << pointer << ' ';
+				pointer = parent[pointer];
+			}
+			return;
 		}
 
-		int three_times = now.num * 3;
-		if (three_times <= n && dist[three_times] == 0) {
-			dist[three_times] = now.dist + 1;
-			now.ans_vec.push_back(three_times);
-			q.push({ three_times, dist[three_times], now.ans_vec });
-			now.ans_vec.pop_back();
-		}
+		int nexts[3] = { nownum + 1, nownum * 2, nownum * 3 };
+		for (int i = 0; i < 3; i++) {
+			int nextnum = nexts[i];
+			if (nextnum > n || dist[nextnum] != -1)
+				continue;
 
-		int twice = now.num * 2;
-		if (twice <= n && dist[twice] == 0) {
-			dist[twice] = now.dist + 1;
-			now.ans_vec.push_back(twice);
-			q.push({ twice, dist[twice], now.ans_vec });
-			now.ans_vec.pop_back();
-		}
-
-		int plusone = now.num + 1;
-		if (plusone <= n && dist[plusone] == 0) {
-			dist[plusone] = now.dist + 1;
-			now.ans_vec.push_back(plusone);
-			q.push({ plusone, dist[plusone], now.ans_vec });
-			now.ans_vec.pop_back();
+			dist[nextnum] = dist[nownum] + 1;
+			parent[nextnum] = nownum;
+			q.push({ nextnum });
 		}
 	}
+	return;
 }
 
 int main() {
 	cin >> n;
-	dist.assign(n + 1, 0);
+	dist.assign(n + 1, -1);
+	parent.assign(n + 1, -1);
 
-	vector<int> ans_vec;
 	BFS();
 }
