@@ -1,59 +1,61 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <algorithm>
 
 using namespace std;
 
-int parent[1000001]; 
-int visited[1000001];
+int n;
+vector<int> dist;
+struct QInfo {
+	int num, dist;
+	vector<int> ans_vec;
+};
 
-void solve(int n) {
-    queue<int> q;
-    q.push(n);
-    visited[n] = 0;
-    parent[n] = -1; 
+void BFS() {
+	dist[1] = 0;
+	queue<QInfo> q;
+	q.push({ 1, 0, {1} });
 
-    while (!q.empty()) {
-        int cur = q.front();
-        q.pop();
+	while (!q.empty()) {
+		QInfo now = q.front();
+		q.pop();
 
-        if (cur == 1) {
-            cout << visited[1] << "\n"; 
+		if (now.num == n) {
+			cout << now.dist << '\n';
+			for (auto it = now.ans_vec.rbegin(); it != now.ans_vec.rend(); it++)
+				cout << *it << ' ';
+		}
 
-            int temp = 1;
-            vector<int> path;
-            while (temp != -1) {
-                path.push_back(temp);
-                temp = parent[temp];
-            }
-            for (int i = path.size() - 1; i >= 0; i--) {
-                cout << path[i] << " ";
-            }
-            return;
-        }
+		int three_times = now.num * 3;
+		if (three_times <= n && dist[three_times] == 0) {
+			dist[three_times] = now.dist + 1;
+			now.ans_vec.push_back(three_times);
+			q.push({ three_times, dist[three_times], now.ans_vec });
+			now.ans_vec.pop_back();
+		}
 
-        int next_ops[3];
-        int count = 0;
-        if (cur % 3 == 0) next_ops[count++] = cur / 3;
-        if (cur % 2 == 0) next_ops[count++] = cur / 2;
-        next_ops[count++] = cur - 1;
+		int twice = now.num * 2;
+		if (twice <= n && dist[twice] == 0) {
+			dist[twice] = now.dist + 1;
+			now.ans_vec.push_back(twice);
+			q.push({ twice, dist[twice], now.ans_vec });
+			now.ans_vec.pop_back();
+		}
 
-        for (int i = 0; i < count; i++) {
-            int next_num = next_ops[i];
-
-            if (next_num >= 1 && visited[next_num] == 0 && next_num != n) {
-                visited[next_num] = visited[cur] + 1;
-                parent[next_num] = cur; 
-                q.push(next_num);
-            }
-        }
-    }
+		int plusone = now.num + 1;
+		if (plusone <= n && dist[plusone] == 0) {
+			dist[plusone] = now.dist + 1;
+			now.ans_vec.push_back(plusone);
+			q.push({ plusone, dist[plusone], now.ans_vec });
+			now.ans_vec.pop_back();
+		}
+	}
 }
 
 int main() {
-    int n;
-    cin >> n;
-    solve(n);
-    return 0;
+	cin >> n;
+	dist.assign(n + 1, 0);
+
+	vector<int> ans_vec;
+	BFS();
 }
