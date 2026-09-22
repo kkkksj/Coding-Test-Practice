@@ -4,13 +4,13 @@
 
 using namespace std;
 
-bool IsRight(string str){
+bool IsRight(string s){
     stack<char> st;
-    for(char s : str){
-        if(!st.empty() && (st.top() == '(' && s == ')'))
+    for(char c : s){
+        if(!st.empty() && (st.top() == '(' && c == ')'))
             st.pop();
         else
-            st.push(s);
+            st.push(c);
     }
     if(st.empty())
         return true;
