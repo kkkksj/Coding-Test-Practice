@@ -22,7 +22,8 @@ int solution(int n) {
         }
         else {
             e++;
-            if (e > n) break;
+            if (e > n) 
+                break;
             sum += e;
         }
     }
