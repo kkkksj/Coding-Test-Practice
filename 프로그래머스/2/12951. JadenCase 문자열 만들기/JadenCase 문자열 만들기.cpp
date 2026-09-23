@@ -1,28 +1,41 @@
 #include <string>
+#include <vector>
 
 using namespace std;
 
+string convertJC(string str){
+    int n = str.size();
+    
+    if(str[0] >= 'a' && str[0] <= 'z')
+        str[0] = (str[0]-'a' + 'A');
+    for(int i=1; i<n; i++)
+        if(str[i] >= 'A' && str[i] <= 'Z')
+            str[i] = (str[i]-'A' + 'a');
+    
+    return str;
+}
+
 string solution(string s) {
-    bool isFirst = true;
-
-    for (int i = 0; i < s.size(); i++) {
-        if (s[i] == ' ') {
-            isFirst = true;
-        }
-        else {
-            if (isFirst) {
-                if (s[i] >= 'a' && s[i] <= 'z') {
-                    s[i] = s[i] - 'a' + 'A';
-                }
-                isFirst = false;
-            }
-            else {
-                if (s[i] >= 'A' && s[i] <= 'Z') {
-                    s[i] = s[i] - 'A' + 'a';
-                }
-            }
-        }
+    string answer = "";
+    
+    int n=s.size();
+    
+    string str = "";
+    for(int i=0; i<n; i++){
+        if(s[i] == ' '){
+            str = convertJC(str);
+            answer += str;
+            answer += ' ';
+            str = "";
+        }        
+        else
+            str += s[i];
     }
-
-    return s;
+    
+    str = convertJC(str);
+    answer += str;
+    // answer += ' ';
+    // str = "";
+    
+    return answer;
 }
