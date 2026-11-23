@@ -1,87 +1,74 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <limits.h>
+
+#define MAXV 20001
+#define INF 1000000000
 
 using namespace std;
 
-int v, e;
-vector<vector<pair<int, int>>> graph;
+struct Node {
+    int v;
+    int dist;
 
-struct CMP{
-    bool operator()(pair<int, int> a, pair<int, int> b){
-        if(a.second != b.second)
-            return a.second > b.second;
-        return a.first > b.first;
+    bool operator<(const Node& right) const {
+        return dist > right.dist;
     }
 };
 
-
-void Dijkstra(int start){
-    vector<int> dist (v+1, INT_MAX);
-    dist[start] = 0;
-
-    priority_queue<pair<int, int>, vector<pair<int, int>>, CMP> pq;
-    pq.push(make_pair(start, dist[start]));
-
-    vector<bool> visited(v+1, false);
-
-    while(!pq.empty()){
-        int node = pq.top().first;
-        int d = pq.top().second;
-        pq.pop();
-        
-        if (d != dist[node]) continue; 
-        visited[node] = true;
-
-        for(pair<int, int> info : graph[node]){
-            int next_node = info.first;
-            int next_d = info.second;
-
-            if(visited[next_node])
-                continue;
-            
-            if(dist[next_node] > d+next_d){
-                dist[next_node] = d+next_d;
-                pq.push(make_pair(next_node, dist[next_node]));
-            }
-        }
-    }
-
-    for(int i=1; i<v+1; i++){
-        int d = dist[i];
-        if(d == INT_MAX)
-            cout << "INF" << '\n';
-        else
-            cout << d << '\n';
-    }
-}
-
-void MakeGraph(int a, int b, int w){
-    for(pair<int, int> &tmp : graph[a]){
-        if(tmp.first == b){
-            tmp.second = min(tmp.second, w);
-            return ;
-        }
-    }
-    graph[a].push_back(make_pair(b, w));
-}
+vector<pair<int, int>> graph[MAXV];
+int dist[MAXV];
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-    
+    cin.tie(NULL);
+
+    int v, e;
     cin >> v >> e;
-    graph.assign(v+1, vector<pair<int, int>> ());
 
     int start;
     cin >> start;
 
-    int a, b, w;
-    while(e--){
-        cin >> a >> b >> w;
-        MakeGraph(a, b, w);
+    for (int i = 0; i < e; i++) {
+        int from, to, cost;
+        cin >> from >> to >> cost;
+
+        graph[from].push_back({to, cost});
     }
 
-    Dijkstra(start);
+    for (int i = 1; i <= v; i++)
+        dist[i] = INF;
+
+    priority_queue<Node> pq;
+
+    dist[start] = 0;
+    pq.push({start, 0});
+
+    while (!pq.empty()) {
+        Node now = pq.top();
+        pq.pop();
+
+        if (now.dist > dist[now.v])
+            continue;
+
+        for (auto next : graph[now.v]) {
+            int next_v = next.first;
+            int next_dist = now.dist + next.second;
+
+            if (next_dist >= dist[next_v])
+                continue;
+
+            dist[next_v] = next_dist;
+            pq.push({next_v, next_dist});
+        }
+    }
+
+    for (int i = 1; i <= v; i++) {
+        if (dist[i] == INF)
+            cout << "INF" << '\n';
+        else
+            cout << dist[i] << '\n';
+    }
+
+    return 0;
 }
