@@ -1,68 +1,69 @@
 #include <iostream>
 #include <queue>
-#include <vector>
+
+#define MAXN 1000
 
 using namespace std;
 
-vector<vector<int>> tomatos;
-vector<vector<int>> day;
-int m, n;
-vector<int> i_list = {-1, 0, 1, 0};
-vector<int> j_list = {0, -1, 0, 1};
+struct Node {
+    int r;
+    int c;
+};
 
-int BFS(queue<pair<int, int>> q, int ttmato){
-    int cnt = 0;
-    int day_cnt = 0;
+int n, m;
+int board[MAXN][MAXN];
 
-    while(!q.empty()){
-        int i = q.front().first;
-        int j = q.front().second;
-        q.pop();
-        cnt++;
+int dr[4] = {-1, 1, 0, 0};
+int dc[4] = {0, 0, -1, 1};
 
-        for(int dir=0; dir<4; dir++){
-            int next_i = i + i_list[dir];
-            int next_j = j + j_list[dir];
+int main() {
+    cin >> m >> n;
 
-            if((next_i>=0 && next_i<n) && (next_j>=0 && next_j<m))
-                if(tomatos[next_i][next_j] == 0){
-                    tomatos[next_i][next_j] = 1;
-                    q.push({next_i, next_j});
-                    day[next_i][next_j] = day[i][j] + 1;
-                    day_cnt = max(day[next_i][next_j], day_cnt);
-                }
+    queue<Node> q;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> board[i][j];
+
+            if (board[i][j] == 1)
+                q.push({i, j});
         }
     }
 
-    if(ttmato == cnt)
-        return day_cnt;
-    return -1;
-}
+    while (!q.empty()) {
+        Node now = q.front();
+        q.pop();
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+        for (int dir = 0; dir < 4; dir++) {
+            int nr = now.r + dr[dir];
+            int nc = now.c + dc[dir];
 
-    cin >> m >> n;
+            if (nr < 0 || nr >= n || nc < 0 || nc >= m)
+                continue;
 
-    tomatos.resize(n, vector<int> (m));
-    day.resize(n, vector<int> (m, -1));
-    queue<pair<int, int>> q;
-    int ttomato = 0; 
-    for(int i=0; i<n; i++)
-        for(int j=0; j<m; j++){
-            int t;
-            cin >> t;
-            tomatos[i][j] = t;
-            
-            if(t==0 || t==1){
-                ttomato++;
-                if(t==1){
-                    q.push({i, j});
-                    day[i][j] = 0;
-                }
-            }
+            if (board[nr][nc] != 0)
+                continue;
+
+            board[nr][nc] = board[now.r][now.c] + 1;
+            q.push({nr, nc});
         }
-    
-    cout << BFS(q, ttomato) << '\n';
+    }
+
+    int answer = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (board[i][j] == 0) {
+                cout << -1;
+                return 0;
+            }
+
+            if (board[i][j] > answer)
+                answer = board[i][j];
+        }
+    }
+
+    cout << answer - 1 << '\n';
+
+    return 0;
 }
