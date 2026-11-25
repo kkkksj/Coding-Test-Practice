@@ -1,26 +1,32 @@
 #include <iostream>
-#include <cmath>
-#include <vector>
 
 using namespace std;
 
-void Hanoi(int start, int end, int tmp, int n){
-    if(n == 1){
-        cout << start << ' ' << end << '\n';
+void Hanoi(int n, int from, int to, int mid) {
+    if (n == 1) {
+        cout << from << ' ' << to << '\n';
         return;
     }
-    Hanoi(start, tmp, end, n-1);
-    cout << start << ' ' << end << '\n';
-    Hanoi(tmp, end, start, n-1);
+
+    Hanoi(n - 1, from, mid, to);
+
+    cout << from << ' ' << to << '\n';
+
+    Hanoi(n - 1, mid, to, from);
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-
     int n;
     cin >> n;
 
-    cout << (int)pow(2, n)-1 << '\n';
-    Hanoi(1, 3, 2, n);
+    int cnt = 1;
+
+    for (int i = 0; i < n; i++)
+        cnt *= 2;
+
+    cout << cnt - 1 << '\n';
+
+    Hanoi(n, 1, 3, 2);
+
+    return 0;
 }
