@@ -1,45 +1,68 @@
 #include <iostream>
-#include <vector>
-#include <limits.h>
+#include <algorithm>
+
+#define MAXN 101
+#define INF 1000000000
 
 using namespace std;
 
+int n, m;
+int cost[MAXN][MAXN];
+int short_cost[MAXN][MAXN];
+
+void Floyd() {
+    for (int k = 1; k <= n; k++) {
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (short_cost[i][k] == INF || short_cost[k][j] == INF)
+                    continue;
+
+                short_cost[i][j] = min(short_cost[i][j],
+                    short_cost[i][k] + short_cost[k][j]);
+            }
+        }
+    }
+}
+
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
-    int n;
-    cin >> n;
-    vector<vector<long long>> dist(n+1, vector<long long> (n+1, INT_MAX));
-    for(int i=1; i<n+1; i++)  
-        for(int j=1; j<n+1; j++)
-            if(i==j)
-                dist[i][j] = 0;
+    cin.tie(NULL);
 
-    int m;
-    cin >> m;
+    cin >> n >> m;
 
-    for(int i=0; i<m; i++){
-        int a, b;
-        long long w;
-        cin >> a >> b >> w;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            cost[i][j] = INF;
 
-        dist[a][b] = min(w, dist[a][b]);
+            if (i == j)
+                cost[i][j] = 0;
+        }
     }
 
-    for(int i=1; i<n+1; i++)
-        for(int j=1; j<n+1; j++)
-            for(int k=1; k<n+1; k++){
-                if(dist[j][i] + dist[i][k] < dist[j][k])
-                    dist[j][k] = dist[j][i] + dist[i][k];
-            }
+    int a, b, c;
 
-    for(int i=1; i<n+1; i++){
-        for(int j=1; j<n+1; j++){
-            if(dist[i][j] == INT_MAX)
+    for (int i = 0; i < m; i++) {
+        cin >> a >> b >> c;
+        cost[a][b] = min(cost[a][b], c);
+    }
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            short_cost[i][j] = cost[i][j];
+        }
+    }
+
+    Floyd();
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (short_cost[i][j] == INF)
                 cout << 0 << ' ';
             else
-                cout << dist[i][j] << ' ';
+                cout << short_cost[i][j] << ' ';
         }
-        cout << '\n';    
+        cout << '\n';
     }
+
+    return 0;
 }
