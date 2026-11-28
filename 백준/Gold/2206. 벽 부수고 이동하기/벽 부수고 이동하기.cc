@@ -1,64 +1,74 @@
 #include <iostream>
-#include <vector>
-#include <limits.h>
+#include <string>
 #include <queue>
-#include <tuple>
+
+#define MAXN 1000
 
 using namespace std;
 
+string grid[MAXN];
+bool visited[MAXN][MAXN][2];
+
 int n, m;
-vector<string> info;
+int i_list[4] = {-1, 1, 0, 0};
+int j_list[4] = {0, 0, -1, 1};
 
-vector<int> i_list = {-1, 1, 0, 0};
-vector<int> j_list = {0, 0, -1, 1};
+struct Info {
+    int i, j, cnt;
+    bool crashed;
+};
 
-void BFS(int i, int j){
-    vector<vector<vector<int>>> dist(n, vector<vector<int>> (m, vector<int>(2, 0)));
-    dist[0][0][0] = 1;
-    queue<tuple<int, int, int>> q;
-    q.push({0, 0, 0});
+int Search() {
+    queue<Info> q;
 
-    while(!q.empty()){
-        int now_i = get<0>(q.front());
-        int now_j = get<1>(q.front());
-        int chance = get<2>(q.front());
+    q.push({0, 0, 1, false});
+    visited[0][0][0] = true;
+
+    while (!q.empty()) {
+        Info now = q.front();
         q.pop();
 
-        if(now_i==n-1 && now_j==m-1){
-            cout << dist[now_i][now_j][chance] << '\n';
-            return;    
-        }
+        if (now.i == n - 1 && now.j == m - 1)
+            return now.cnt;
 
-        for(int d=0; d<4; d++){
-            int next_i = now_i + i_list[d];
-            int next_j = now_j + j_list[d];
+        for (int d = 0; d < 4; d++) {
+            int nexti = now.i + i_list[d];
+            int nextj = now.j + j_list[d];
 
-            if(next_i<0 || next_i>=n || next_j<0 || next_j>=m)
+            if (nexti < 0 || nexti >= n || nextj < 0 || nextj >= m)
                 continue;
-            
-            if(info[next_i][next_j] == '1' && chance==0 && dist[next_i][next_j][1] == 0){
-                dist[next_i][next_j][1] = dist[now_i][now_j][chance]+1;
-                q.push({next_i, next_j, 1});
+
+            if (grid[nexti][nextj] == '1' && !now.crashed) {
+                if (visited[nexti][nextj][1])
+                    continue;
+
+                q.push({nexti, nextj, now.cnt + 1, true});
+                visited[nexti][nextj][1] = true;
             }
-            else if(info[next_i][next_j] == '0' && dist[next_i][next_j][chance] == 0){
-                dist[next_i][next_j][chance] = dist[now_i][now_j][chance]+1;
-                q.push({next_i, next_j, chance});
+            else if (grid[nexti][nextj] == '0') {
+                if (visited[nexti][nextj][now.crashed])
+                    continue;
+
+                q.push({nexti, nextj, now.cnt + 1, now.crashed});
+                visited[nexti][nextj][now.crashed] = true;
             }
         }
     }
-    cout << -1 << '\n';
-    return;
+
+    return -1;
 }
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL); cout.tie(NULL);
+    cin.tie(NULL);
 
     cin >> n >> m;
-    
-    info.assign(n, "");
-    for(int i=0; i<n; i++)
-        cin >> info[i];
-    
-    BFS(0, 0);
+
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+    }
+
+    cout << Search() << '\n';
+
+    return 0;
 }
